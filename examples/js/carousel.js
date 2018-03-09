@@ -72,13 +72,14 @@ class Item{
         this.angle = start_angle;
         this.color = "rgba(0,255,0,.99)";
         this.stroke = 'white';
-        this.reflect_space = 30;
+        this.reflect_space = this.height/5;
     }
     draw(a,d){
         this.x = this.carousel.center_x - this.width + COS(a+this.angle)*radius_x;
         this.y = this.carousel.center_y - this.height + SIN(a+this.angle)*radius_y;
       	var scale = 3+(this.y/150);
-        var bounce= d+SIN(TIME+this.angle)*d;
+      	//this.reflect_space = this.height*2/(scale);
+        var bounce= 10+SIN(TIME+this.angle)*ABS(d);
         /*fillColor(0,255,0,.5); 
         strokeColor(255,255,255,.5); 
         fillRect(this.x,-bounce + this.y+(this.height * scale)+(scale * this.reflect_space),this.width*scale,this.height*scale);
@@ -90,9 +91,9 @@ class Item{
         */
         globalAlpha(.3);
         ctx.scale(1,-1);
-        drawImage("images/js.png",this.x,-bounce + -this.y-(this.height * scale)+(scale * -this.reflect_space),this.width*scale,this.height*scale);
+        drawImage("images/js.png",this.x,-bounce - this.y-(this.height*scale)-((scale * this.reflect_space)*3),this.width*scale,this.height*scale);
     	globalAlpha(1);
     	ctx.scale(1,-1);
-    	drawImage("images/js.png",this.x,this.y+bounce,this.width*scale,this.height*scale);
+    	drawImage("images/js.png",this.x,this.y-bounce,this.width*scale,this.height*scale);
     }
 }

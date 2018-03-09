@@ -258,6 +258,9 @@
     scope.COS = function (val) {
         return Math.cos(toRadians(val));
     }
+    scope.ABS = function(val){
+        return Math.abs(val);
+    }
     scope.FLOOR = function (val) {
         return Math.floor(val);
     }
