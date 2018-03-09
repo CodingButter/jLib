@@ -20,9 +20,11 @@
     scope.canvas;
     scope.ctx;
     scope.FPS = 30;
-    scope.delta_time = 0;
+    scope.DELTA_TIME = 0;
+    scope.TIME = 0;
     scope.Width = 0;
     scope.Height = 0;
+    scope.preloads = {};
     onload = function () {
         if(scope.setup)
             scope.setup();
@@ -34,14 +36,15 @@
         let last_time = 0;
 
         function lp(time) {
-            scope.delta_time += time - last_time;
+            scope.TIME = time;
+            scope.DELTA_TIME += time - last_time;
             last_time = time;
-            if(scope.delta_time > (1000 / scope.FPS) * 2) {
-                scope.delta_time = 0;
+            if(scope.DELTA_TIME > (1000 / scope.FPS) * 2) {
+                scope.DELTA_TIME = 0;
             }
-            if(scope.delta_time >= 1000 / scope.FPS) {
+            if(scope.DELTA_TIME >= 1000 / scope.FPS) {
                 inner_draw();
-                scope.delta_time -= 1000 / scope.FPS;
+                scope.DELTA_TIME -= 1000 / scope.FPS;
             }
             requestAnimationFrame(lp);
         }
@@ -52,6 +55,7 @@
     }
 
     function inner_draw() {
+        scope.current_translate = {x:0,y:0};
         if(scope.clear_canvas && typeof scope.ctx != "undefined") {
             scope.ctx.setTransform(1, 0, 0, 1, 0, 0);
             scope.ctx.clearRect(0, 0, Width, Height);
@@ -70,8 +74,8 @@
         element.appendChild(scope.canvas);
         scope.ctx = scope.canvas.getContext("2d");
         scope.canvas.addEventListener("mousemove", function (e) {
-            scope.mouse_x = e.clientX;
-            scope.mouse_y = e.clientY;
+            scope.mouse_x = scope.current_translate.x - e.clientX;
+            scope.mouse_y = scope.current_translate.y - e.clientY;
         });
         for(var property in scope.ctx){
             if(!scope[property]){
@@ -89,6 +93,18 @@
                 }
             }
         }
+    }
+    scope.globalAlpha = function(val){
+        return scope.ctx.globalAlpha = val;
+    }
+    scope.drawImage = function(img,x,y,width,height,crop_x,crop_y,crop_width,crop_height){ 
+
+        if(!scope.preloads[img]){
+            var imge = new Image();
+            imge.src = img;
+            scope.preloads[img] = imge;
+        }
+        eval("scope.ctx.drawImage(scope.preloads[img],x,y"+(width?",width":"")+(height?",height":"")+(crop_x?",crop_x":"")+(crop_y?",crop_y":"")+(crop_width?",crop_width":"")+(crop_height?",crop_height":"")+");");
     }
     scope.setCanvasSize = function (w, h) {
         h = h || w;
