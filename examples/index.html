@@ -1,0 +1,33 @@
+<html>
+	<head>
+		<title>jLib Examples</title>
+		<link rel="stylesheet" type="text/css" href="css/index.css"/>
+	</head>
+	<body>
+		<wrapper>
+			<header></header>
+			<sidebar>
+				<ul>
+					<li>
+						<a href="carousel.html">Carousel</a>
+					</li>
+				</ul>
+			</sidebar>
+			<content></content>
+			<script>
+				var Ass = document.getElementsByTagName("a");
+				for(var i=0;i<Ass.length;i++){
+					let aa = Ass[i];
+					aa.onclick = function(e){
+						e.preventDefault();
+						loadPage(e.target.getAttribute("href"));
+					}
+				}
+				function loadPage(url){
+					let content = document.getElementsByTagName("content")[0];
+					content.innerHTML = "<iframe src='"+url+"'></iframe>"
+				}
+			</script>
+		</wrapper>
+	</body>
+</html>
